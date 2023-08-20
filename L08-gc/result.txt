@@ -1,0 +1,16 @@
+heap size               До оптимизации              После оптимизации
+-Xms256m    -Xmx256m    OutOfMemoryError            spend msec:1432, sec:1
+-Xms512m    -Xmx512m    spend msec:8625, sec:8      spend msec:1173, sec:1
+-Xms768m    -Xmx768m    spend msec:8754, sec:8      spend msec:1145, sec:1
+-Xms1024m   -Xmx1024m   spend msec:8848, sec:8      spend msec:1179, sec:1
+-Xms1536m   -Xmx1536m   spend msec:8326, sec:8      spend msec:1172, sec:1
+-Xms1792m   -Xmx1792m   spend msec:7858, sec:7      spend msec:1165, sec:1
+-Xms2048m   -Xmx2048m   spend msec:8363, sec:8      spend msec:1194, sec:1
+-Xms3072m   -Xmx3072m   spend msec:8740, sec:8      spend msec:1178, sec:1
+-Xms4096m   -Xmx4096m   spend msec:8935, sec:8      spend msec:1150, sec:1
+
+
+Вывод:
+Оптимальный объем памяти для heap
+До оптимизации:      -Xms1792m   -Xmx1792m
+После оптимизации:   -Xms512m    -Xmx512m
