@@ -3,6 +3,7 @@ include("L01-gradle")
 include("L04-generics")
 include("L08-gc")
 include("L06-annotations")
+include("L10-byteCodes")
 
 pluginManagement {
     val jgitver: String by settings
