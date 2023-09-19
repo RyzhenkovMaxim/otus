@@ -7,43 +7,46 @@ import java.lang.reflect.Proxy;
 import java.util.*;
 
 public class Ioc {
-    private Ioc(){}
-    static LogInterface createLogInterface(){
-        InvocationHandler handler = new DemoInvocationHandler(new LogInterfaceImpl());
-        return (LogInterface)
+    private Ioc() {
+    }
+
+    @SuppressWarnings("unchecked")
+    static <T> T createLogInterface(Object object) {
+        InvocationHandler handler = new DemoInvocationHandler(object);
+        return (T)
                 Proxy.newProxyInstance(
                         Ioc.class.getClassLoader(),
-                        new Class<?>[] {LogInterface.class},
+                        object.getClass().getInterfaces(),
                         handler);
     }
 
     static class DemoInvocationHandler implements InvocationHandler {
-        private final LogInterface logInterfaceImpl;
+        private final Object object;
         private final Set<String> annotatedMethods;
 
-        DemoInvocationHandler(LogInterface logInterfaceImpl) {
-            this.logInterfaceImpl = logInterfaceImpl;
-            annotatedMethods = getAnnotatedMethod(logInterfaceImpl.getClass());
+        DemoInvocationHandler(Object object) {
+            this.object = object;
+            annotatedMethods = getAnnotatedMethod(object.getClass(), Log.class);
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (annotatedMethods.contains(method.getName() + Arrays.toString(method.getParameters()))){
-                System.out.println("\nexecuted method: " + method.getName() + ", param: " +  Arrays.toString(args).replaceAll("[\\[\\]]", ""));
+            if (annotatedMethods.contains(method.getName() + Arrays.toString(method.getParameters()))) {
+                System.out.println("\nexecuted method: " + method.getName() + ", param: " + Arrays.toString(args).replaceAll("[\\[\\]]", ""));
             }
-            return method.invoke(logInterfaceImpl, args);
+            return method.invoke(object, args);
         }
 
-        private static Set<String> getAnnotatedMethod(Class<?> clazz) {
-            Set<String> annotatedMethods  = new HashSet<>();
+        private static Set<String> getAnnotatedMethod(Class<?> clazz, Class<? extends Annotation> annotation) {
+            Set<String> annotatedMethods = new HashSet<>();
             Method[] methods = clazz.getDeclaredMethods();
 
             for (Method method : methods) {
-                if (method.isAnnotationPresent(Log.class)) {
+                if (method.isAnnotationPresent(annotation)) {
                     annotatedMethods.add(method.getName() + Arrays.toString(method.getParameters()));
                 }
             }
-            return annotatedMethods ;
+            return annotatedMethods;
         }
     }
 }
